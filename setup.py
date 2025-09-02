@@ -1,50 +1,32 @@
-#!/usr/bin/env python
-from itertools import chain
 from setuptools import setup, find_packages
-from pyinaturalist import __version__
 
-# These package categories allow tox and build environments to install only what they need
-extras_require = {
-    # Packages used for CI jobs
-    "build": ["coveralls", "twine", "wheel"],
-    # Packages used for documentation builds
-    "docs": [
-        "m2r2",
-        "Sphinx~=3.2.1",
-        "sphinx-autodoc-typehints",
-        "sphinx-automodapi",
-        "sphinx-rtd-theme",
-        "sphinxcontrib-apidoc",
-    ],
-    # Packages used for testing both locally and in CI jobs
-    "test": [
-        "black==20.8b1",
-        "flake8",
-        "mypy",
-        "pytest>=5.0",
-        "pytest-cov",
-        "requests-mock>=1.7",
-        "tox>=3.15",
-    ],
-}
-# All development/testing packages combined
-extras_require["dev"] = list(chain.from_iterable(extras_require.values()))
+
+def scm_version():
+    def local_scheme(version):
+        if version.tag and not version.distance:
+            return version.format_with("")
+        else:
+            return version.format_choice("+{node}", "+{node}.dirty")
+    return {
+        "relative_to": __file__,
+        "version_scheme": "guess-next-dev",
+        "local_scheme": local_scheme
+    }
 
 
 setup(
-    name="pyinaturalist",
-    version=__version__,
-    author="Nicolas Noé",
-    author_email="nicolas@niconoe.eu",
-    url="https://github.com/niconoe/pyinaturalist",
+    name="nmigen-soc",
+    use_scm_version=scm_version(),
+    author="whitequark",
+    author_email="whitequark@whitequark.org",
+    description="System on Chip toolkit for nMigen",
+    #long_description="""TODO""",
+    license="BSD",
+    setup_requires=["wheel", "setuptools", "setuptools_scm"],
+    install_requires=["nmigen>=0.2,<0.5"],
     packages=find_packages(),
-    include_package_data=True,
-    install_requires=[
-        "keyring~=21.4.0",
-        "python-dateutil>=2.0",
-        "python-forge",
-        "requests>=2.24.0",
-    ],
-    extras_require=extras_require,
-    zip_safe=False,
+    project_urls={
+        "Source Code": "https://github.com/nmigen/nmigen-soc",
+        "Bug Tracker": "https://github.com/nmigen/nmigen-soc/issues",
+    },
 )
