@@ -1,143 +1,84 @@
-olefile
-=======
+# diff-match-patch
 
-[![Test](https://github.com/decalage2/olefile/actions/workflows/test.yml/badge.svg)](https://github.com/decalage2/olefile/actions)
-[![Build Status AppVeyor](https://ci.appveyor.com/api/projects/status/github/decalage2/olefile?svg=true)](https://ci.appveyor.com/project/decalage2/olefile)
-[![codecov](https://codecov.io/gh/decalage2/olefile/branch/main/graph/badge.svg)](https://codecov.io/gh/decalage2/olefile)
-[![Documentation Status](http://readthedocs.org/projects/olefile/badge/?version=latest)](http://olefile.readthedocs.io/en/latest/?badge=latest)
-[![PyPI](https://img.shields.io/pypi/v/olefile.svg)](https://pypi.org/project/olefile/)
-[![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/decalage2)
+Google's [Diff Match and Patch][DMP] library, packaged for modern Python.
 
-[olefile](https://www.decalage.info/olefile) is a Python package to parse, read and write
-[Microsoft OLE2 files](http://en.wikipedia.org/wiki/Compound_File_Binary_Format)
-(also called Structured Storage, Compound File Binary Format or Compound Document File Format),
-such as Microsoft Office 97-2003 documents, vbaProject.bin in MS Office 2007+ files, Image Composer
-and FlashPix files, Outlook messages, StickyNotes, several Microscopy file formats, McAfee antivirus quarantine files,
-etc.
+[![build status](https://travis-ci.org/diff-match-patch-python/diff-match-patch.svg?branch=master)](https://travis-ci.org/diff-match-patch-python/diff-match-patch)
+[![version](https://img.shields.io/pypi/v/diff-match-patch.svg)](https://pypi.org/project/diff-match-patch)
+[![license](https://img.shields.io/pypi/l/diff-match-patch.svg)](https://github.com/diff-match-patch-python/diff-match-patch/blob/master/LICENSE)
 
+## Install
 
-**Quick links:** [Home page](https://www.decalage.info/olefile) -
-[Download/Install](http://olefile.readthedocs.io/en/latest/Install.html) -
-[Documentation](http://olefile.readthedocs.io/en/latest) -
-[Report Issues/Suggestions/Questions](https://github.com/decalage2/olefile/issues) -
-[Contact the author](https://www.decalage.info/contact) -
-[Repository](https://github.com/decalage2/olefile) -
-[Updates on Twitter](https://twitter.com/decalage2)
+diff-match-patch is supported on Python 2.7 or Python 3.4 or newer.
+You can install it from PyPI:
 
+```shell
+python -m pip install diff-match-patch
+```
 
-News
-----
+## Usage
 
-Follow all updates and news on Twitter: <https://twitter.com/decalage2>
+Generating a patchset (analogous to unified diff) between two texts:
 
-- **2018-09-09 v0.46**: OleFileIO can now be used as a context manager
-(with...as), to close the file automatically
-(see [doc](https://olefile.readthedocs.io/en/latest/Howto.html#open-an-ole-file-from-disk)).
-Improved handling of malformed files, fixed several bugs.
-- 2018-01-24 v0.45: olefile can now overwrite streams of any size, improved handling of malformed files,
-fixed several [bugs](https://github.com/decalage2/olefile/milestone/4?closed=1), end of support for Python 2.6 and 3.3.
-- 2017-01-06 v0.44: several bugfixes, removed support for Python 2.5 (olefile2),
-added support for incomplete streams and incorrect directory entries (to read malformed documents),
-added getclsid, improved [documentation](http://olefile.readthedocs.io/en/latest) with API reference.
-- 2017-01-04: moved the documentation to [ReadTheDocs](http://olefile.readthedocs.io/en/latest)
-- 2016-05-20: moved olefile repository to [GitHub](https://github.com/decalage2/olefile)
-- 2016-02-02 v0.43: fixed issues [#26](https://github.com/decalage2/olefile/issues/26)
-    and [#27](https://github.com/decalage2/olefile/issues/27),
-    better handling of malformed files, use python logging.
-- see [changelog](https://github.com/decalage2/olefile/blob/master/CHANGELOG.md) for more detailed information and
-the latest changes.
+```python
+from diff_match_patch import diff_match_patch
 
-Download/Install
-----------------
+dmp = diff_match_patch()
+patches = dmp.patch_make(text1, text2)
+diff = dmp.patch_toText(patches)
+```
 
-If you have pip or setuptools installed (pip is included in Python 2.7.9+), you may simply run **pip install olefile**
-or **easy_install olefile** for the first installation.
+Applying a patchset to a text can then be done with:
 
-To update olefile, run **pip install -U olefile**.
+```python
+from diff_match_patch import diff_match_patch
 
-Otherwise, see http://olefile.readthedocs.io/en/latest/Install.html
+dmp = diff_match_patch()
+patches = dmp.patch_fromText(diff)
+new_text, _ = dmp.patch_apply(patches, text)
+```
 
-Features
---------
+## Original README
+The Diff Match and Patch libraries offer robust algorithms to perform the
+operations required for synchronizing plain text.
 
-- Parse, read and write any OLE file such as Microsoft Office 97-2003 legacy document formats (Word .doc, Excel .xls,
-    PowerPoint .ppt, Visio .vsd, Project .mpp), Image Composer and FlashPix files, Outlook messages, StickyNotes,
-    Zeiss AxioVision ZVI files, Olympus FluoView OIB files, etc
-- List all the streams and storages contained in an OLE file
-- Open streams as files
-- Parse and read property streams, containing metadata of the file
-- Portable, pure Python module, no dependency
+1. Diff:
+   * Compare two blocks of plain text and efficiently return a list of differences.
+   * [Diff Demo](https://neil.fraser.name/software/diff_match_patch/demos/diff.html)
+2. Match:
+   * Given a search string, find its best fuzzy match in a block of plain text. Weighted for both accuracy and location.
+   * [Match Demo](https://neil.fraser.name/software/diff_match_patch/demos/match.html)
+3. Patch:
+   * Apply a list of patches onto plain text. Use best-effort to apply patch even when the underlying text doesn't match.
+   * [Patch Demo](https://neil.fraser.name/software/diff_match_patch/demos/patch.html)
 
-olefile can be used as an independent package or with PIL/Pillow.
+Originally built in 2006 to power Google Docs, this library is now available in C++, C#, Dart, Java, JavaScript, Lua, Objective C, and Python.
 
-olefile is mostly meant for developers. If you are looking for tools to analyze OLE files or to extract data (especially
-for security purposes such as malware analysis and forensics), then please also check my
-[python-oletools](https://www.decalage.info/python/oletools), which are built upon olefile and provide a higher-level interface.
+### Reference
 
+* [API](https://github.com/google/diff-match-patch/wiki/API) - Common API across all languages.
+* [Line or Word Diffs](https://github.com/google/diff-match-patch/wiki/Line-or-Word-Diffs) - Less detailed diffs.
+* [Plain Text vs. Structured Content](https://github.com/google/diff-match-patch/wiki/Plain-Text-vs.-Structured-Content) - How to deal with data like XML.
+* [Unidiff](https://github.com/google/diff-match-patch/wiki/Unidiff) - The patch serialization format.
+* [Support](https://groups.google.com/forum/#!forum/diff-match-patch) - Newsgroup for developers.
 
-Documentation
--------------
+### Languages
+Although each language port of Diff Match Patch uses the same API, there are some language-specific notes.
 
-Please see the [online documentation](http://olefile.readthedocs.io/en/latest) for more information.
+* [C++](https://github.com/google/diff-match-patch/wiki/Language:-Cpp)
+* [C#](https://github.com/google/diff-match-patch/wiki/Language:-C%23)
+* [Dart](https://github.com/google/diff-match-patch/wiki/Language:-Dart)
+* [Java](https://github.com/google/diff-match-patch/wiki/Language:-Java)
+* [JavaScript](https://github.com/google/diff-match-patch/wiki/Language:-JavaScript)
+* [Lua](https://github.com/google/diff-match-patch/wiki/Language:-Lua)
+* [Objective-C](https://github.com/google/diff-match-patch/wiki/Language:-Objective-C)
+* [Python](https://github.com/google/diff-match-patch/wiki/Language:-Python)
 
+A standardized speed test tracks the [relative performance of diffs](https://docs.google.com/spreadsheets/d/1zpZccuBpjMZTvL1nGDMKJc7rWL_m_drF4XKOJvB27Kc/edit#gid=0) in each language.
 
-## Real-life examples ##
+### Algorithms
+This library implements [Myer's diff algorithm](https://neil.fraser.name/writing/diff/myers.pdf) which is generally considered to be the best general-purpose diff. A layer of [pre-diff speedups and post-diff cleanups](https://neil.fraser.name/writing/diff/) surround the diff algorithm, improving both performance and output quality.
 
-A real-life example: [using OleFileIO_PL for malware analysis and forensics](http://blog.gregback.net/2011/03/using-remnux-for-forensic-puzzle-6/).
+This library also implements a [Bitap matching algorithm](https://neil.fraser.name/writing/patch/bitap.ps) at the heart of a [flexible matching and patching strategy](https://neil.fraser.name/writing/patch/).
 
-See also [this paper](https://computer-forensics.sans.org/community/papers/gcfa/grow-forensic-tools-taxonomy-python-libraries-helpful-forensic-analysis_6879) about python tools for forensics, which features olefile.
-
-
-License
--------
-
-olefile (formerly OleFileIO_PL) is copyright (c) 2005-2023 Philippe Lagadec
-([https://www.decalage.info](https://www.decalage.info))
-
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
- * Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-----------
-
-olefile is based on source code from the OleFileIO module of the Python Imaging Library (PIL) published by Fredrik
-Lundh under the following license:
-
-The Python Imaging Library (PIL) is
-
-- Copyright (c) 1997-2009 by Secret Labs AB
-- Copyright (c) 1995-2009 by Fredrik Lundh
-
-By obtaining, using, and/or copying this software and/or its associated documentation, you agree that you have read,
-understood, and will comply with the following terms and conditions:
-
-Permission to use, copy, modify, and distribute this software and its associated documentation for any purpose and
-without fee is hereby granted, provided that the above copyright notice appears in all copies, and that both that
-copyright notice and this permission notice appear in supporting documentation, and that the name of Secret Labs AB or
-the author not be used in advertising or publicity pertaining to distribution of the software without specific, written
-prior permission.
-
-SECRET LABS AB AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES
-OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL SECRET LABS AB OR THE AUTHOR BE LIABLE FOR ANY SPECIAL, INDIRECT OR
-CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
-CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
-SOFTWARE.
+[DMP]: https://github.com/google/diff-match-patch
+[API]: https://github.com/google/diff-match-patch/wiki/API
