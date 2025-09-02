@@ -1,45 +1,25 @@
-#!/usr/bin/env python
-# encoding: utf-8
-
-"""Packaging script."""
-
-import os
+# -*- coding: utf-8 -*-
+# Copyright (C) 2010-2012, eskerda <eskerda@gmail.com>
+# Distributed under the AGPL license, see LICENSE.txt
 
 from setuptools import setup
 
-here = os.path.abspath(os.path.dirname(__file__))
-readme = open(os.path.join(here, "README.rst")).read()
-
 setup(
-    name="circlify",
-    description="Circle packing algorithm for Python",
-    long_description=readme,
-    long_description_content_type="text/x-rst",
-    version="0.14.0",
-    author="Elmotec",
-    author_email="elmotec@gmx.com",
-    license="MIT",
-    keywords="circle packing enclosure hierarchy graph display visualization",
-    url="http://github.com/elmotec/circlify",
-    py_modules=["circlify"],
-    test_suite="tests",
-    setup_requires=[],
-    tests_require=[],
-    python_requires=">=3.5",
-    classifiers=[
-        "Development Status :: 4 - Beta",
-        "Operating System :: OS Independent",
-        "License :: OSI Approved :: MIT License",
-        "Natural Language :: English",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-        "Topic :: Software Development",
-        "Topic :: Utilities",
-        "Topic :: Scientific/Engineering :: Visualization",
-        "Intended Audience :: Developers",
+    name="pybikes",
+    version="1.0",
+    author="Lluis Esquerda",
+    author_email="eskerda@gmail.com",
+    packages=["pybikes"],
+    package_data={
+        'pybikes': ['data/*.json', 'kml/*.kml', 'kml/*.kml.gz'],
+    },
+    license="LICENSE.txt",
+    description="A python library for scrapping bike sharing data",
+    long_description=open('README.md').read(),
+    install_requires=[
+        'requests>=2.20.0',
+        'lxml',
+        'cssselect>=0.9',
+        'shapely>=1.5.13',
     ],
 )
