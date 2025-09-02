@@ -1,5 +1,36 @@
-2. **Service Name**: The service name in `/etc/hosts` should match the one used in the `Override setup.cfg` step.
-3. **Coveralls**: Ensure that the `COVERALLS_REPO_TOKEN` is correctly set in the repository secrets.
+name: Python package
 
-Here's the revised configuration:
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, "pypy-3.8"]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        pip install bitstring>=3.1.3
+        pip install pyflakes
+        pip install pytest
+
+    - name: Run tests
+      run: |
+        pytest
+        pyflakes pybufrkit tests
